@@ -39,8 +39,6 @@ class _MyHomePageState extends State<MyHomePage> {
   late InAppWebViewController _controller;
   double _progress = 0;
 
-  _makingPhoneCall() async {}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,15 +63,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            const ListTile(
-              leading: Icon(Icons.home),
-              title: Text("Home"),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text("Home"),
+              onTap: () {
+                Navigator.pop(context);
+              },
             ),
             ListTile(
               leading: const Icon(Icons.wechat),
               title: const Text("WhatsApp"),
               onTap: () async {
-                var contact = "+919555869727";
+                var contact = "+919874459293";
                 var androidUrl =
                     "whatsapp://send?phone=$contact&text=Hi, I need some help";
                 var iosUrl =
@@ -104,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text("Phone Call",
                   style: TextStyle(color: Colors.redAccent)),
               onTap: () async {
-                var url = Uri.parse("tel:9555869727");
+                var url = Uri.parse("tel:9874459293");
                 if (await canLaunchUrl(url)) {
                   await launchUrl(url);
                 } else {
@@ -127,8 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Stack(
           children: [
             InAppWebView(
-              initialUrlRequest:
-                  URLRequest(url: Uri.parse("https://flutter.dev/")),
+              initialUrlRequest: URLRequest(url: Uri.parse("https://edts.in")),
               onWebViewCreated: (controller) => _controller,
               onProgressChanged: (controller, progress) {
                 setState(() {
