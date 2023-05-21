@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'web_view_container.dart';
 import 'atom_pay_helper.dart';
 import 'package:http/http.dart' as http;
@@ -41,7 +41,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late InAppWebViewController _controller;
+  // late InAppWebViewController _controller;
+  late final WebViewController controller;
   double _progress = 0;
 
   // merchant configuration data
@@ -182,15 +183,28 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Center(
         child: Stack(
           children: [
-            InAppWebView(
-              initialUrlRequest: URLRequest(url: Uri.parse("https://edts.in")),
-              onWebViewCreated: (controller) => _controller,
-              onProgressChanged: (controller, progress) {
+            WebView(
+              initialUrl: "https://flutter.dev/",
+              javascriptMode: JavascriptMode.unrestricted,
+              onWebViewCreated: (WebViewController webViewController) {
+                controller = webViewController;
+              },
+              onProgress: (progress) {
                 setState(() {
                   _progress = progress / 100;
                 });
               },
             ),
+
+            // InAppWebView(
+            //   initialUrlRequest: URLRequest(url: Uri.parse("https://edts.in")),
+            //   onWebViewCreated: (controller) => _controller,
+            //   onProgressChanged: (controller, progress) {
+            //     setState(() {
+            //       _progress = progress / 100;
+            //     });
+            //   },
+            // ),
             _progress < 1
                 ? SizedBox(
                     height: 3,
