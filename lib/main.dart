@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:ptoject1/screen/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -9,17 +11,12 @@ import 'web_view_container.dart';
 import 'atom_pay_helper.dart';
 import 'package:http/http.dart' as http;
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var token = prefs.getString('token');
+  print(token);
+  runApp(MaterialApp(
       title: 'Start To Grow',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -27,9 +24,11 @@ class MyApp extends StatelessWidget {
             seedColor: Colors.deepPurple, primary: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: "Start To Grow"),
-    );
-  }
+      home: token == null
+          ? LoginPage()
+          : MyHomePage(
+              title: "Start with Grow",
+            )));
 }
 
 class MyHomePage extends StatefulWidget {
@@ -172,7 +171,15 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () => _initNdpsPayment(
                   context, responseHashKey, responseDecryptionKey),
             ),
-            const ListTile(
+            ListTile(
+              onTap: () async {
+                final SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                await prefs.remove('token');
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => LoginPage(),
+                ));
+              },
               leading: Icon(Icons.login),
               title: Text("Logout"),
             ),
